@@ -1,3 +1,4 @@
+import { Color } from '@/components/letter-input';
 import { StateContext } from '@/lib/types';
 import React from 'react'
 
@@ -14,6 +15,7 @@ export type GameContextType = {
   gameStatus: GameStatus;
   attemptIndex: number;
   wordIndex: number;
+  usedChars: Set<string>;
 }
 
 export const GameContext = React.createContext<StateContext<GameContextType>>(null);
@@ -34,6 +36,7 @@ const GameProvider = ({
     gameStatus: GameStatus.PLAYING,
     attemptIndex: 0,
     wordIndex: 0,
+    usedChars: new Set(),
   });
 
   return (

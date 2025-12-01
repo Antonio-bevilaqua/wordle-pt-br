@@ -1,16 +1,41 @@
-import { Color } from "@/components/letter-input";
-import { getRandomWord, words } from "@/lib/words";
+import { getRandomWord } from "@/lib/words";
 import { GameContext, GameStatus } from "@/providers/game.provider";
 import React from "react";
 
 export default function useGameManager() {
     const { state, setState } = React.useContext(GameContext)!;
 
-    const updateActualWord = (newWord: string) => {
+    const handleKeyboardEvent = (event: KeyboardEvent) => {
+        if (state.gameStatus !== GameStatus.PLAYING) return;
+        if (event.key === 'Backspace') {
+            return removeLastChar();
+        }
+
+        if (event.key === 'Enter' && state.actualWord.length === state.gameWord.length) {
+            return updateGridWord();
+        }
+
+        if (/^[a-zA-ZçÇ]$/.test(event.key) && state.actualWord.length < state.gameWord.length) {
+            addChar(event.key);
+        }
+    };
+
+    const removeLastChar = () => {
         setState((prevState) => ({
             ...prevState,
-            actualWord: newWord,
+            actualWord: prevState.actualWord.slice(0, -1),
         }));
+    }
+
+    const addChar = (char: string) => {
+        char = char.toUpperCase();
+        setState((prevState) => {
+            prevState.usedChars.add(char);
+            return {
+                ...prevState,
+                actualWord: prevState.actualWord + char
+            };
+        });
     }
 
     const updateGridWord = () => {
@@ -53,8 +78,10 @@ export default function useGameManager() {
 
     return {
         state,
+        addChar,
         updateGridWord,
-        updateActualWord,
+        handleKeyboardEvent,
+        removeLastChar,
         reset,
     }
 }

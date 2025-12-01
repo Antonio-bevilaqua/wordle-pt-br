@@ -1,10 +1,11 @@
 import useGameManager from '@/hooks/use-game-manager';
 import { GameStatus } from '@/providers/game.provider';
+import VirtualKeyboard from './virtual-keyboard';
 
 const GameFeedback = () => {
     const { state, reset } = useGameManager();
 
-    if (state.gameStatus === GameStatus.PLAYING) return <></>;
+    if (state.gameStatus === GameStatus.PLAYING) return <VirtualKeyboard />;
 
     return (
         <div className="flex flex-col items-center justify-center pt-4">
